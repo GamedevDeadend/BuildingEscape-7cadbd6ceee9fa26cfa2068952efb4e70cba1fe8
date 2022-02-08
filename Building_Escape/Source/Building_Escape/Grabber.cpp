@@ -22,6 +22,17 @@ void UGrabber::BeginPlay()
 {
 	Super::BeginPlay();
 
+	Physicshandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+	if(Physicshandle)
+	{
+		// Physics handle is found
+	}
+
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT(" The %s has no PhysicsComponent !!"), *GetOwner()->GetName());
+	}
+
 	// ...
 }
 
@@ -39,12 +50,6 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 		OUT PlayerviewLocation,
 		OUT PlayerviewRotator
 	);
-
-/* 	UE_LOG
-	(
-		LogTemp, Display,TEXT("Location: %s  Rotation: %s"),
-		*OUT PlayerviewLocation.ToString(),*OUT PlayerviewRotator.ToString()
-	); */
 
 	FVector LineTraceEnd = PlayerviewLocation + (PlayerviewRotator.Vector())*Reach;
 	DrawDebugLine
@@ -80,9 +85,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 		AActor* ActorHit = Hit.GetActor();
 		if(ActorHit)
 		{
-			// UE_LOG( LogTemp, Error , TEXT("Ray has hit : %s"), *(ActorHit->GetName()));
+			// Ray has hit the Actor
 		}
 	
-
-	// ...
 }
