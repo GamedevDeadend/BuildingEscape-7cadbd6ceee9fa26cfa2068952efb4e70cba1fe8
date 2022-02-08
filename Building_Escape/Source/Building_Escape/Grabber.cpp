@@ -33,6 +33,14 @@ void UGrabber::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT(" The %s has no PhysicsComponent !!"), *GetOwner()->GetName());
 	}
 
+	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
+	if(InputComponent)
+	{
+		UE_LOG( LogTemp , Warning , TEXT("Input component has found"));
+		InputComponent->BindAction("Grab", IE_Pressed, this, &UGrabber :: Grab);
+	}
+
+
 	// ...
 }
 
@@ -88,4 +96,9 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 			// Ray has hit the Actor
 		}
 	
+}
+
+void UGrabber :: Grab()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Grabber is pressed"));
 }
