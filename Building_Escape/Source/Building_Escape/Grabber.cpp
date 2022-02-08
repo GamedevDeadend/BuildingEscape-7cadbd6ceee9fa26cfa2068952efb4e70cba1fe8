@@ -1,8 +1,8 @@
 // Copyright Michael Bridges 2019
 
 #include "Grabber.h"
-#include "DrawDebugHelpers.h"
 #include "Engine/World.h"
+#include "DrawDebugHelpers.h"
 #include "GameFramework/PlayerController.h"
 
 #define OUT
@@ -22,8 +22,6 @@ void UGrabber::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UE_LOG(LogTemp, Warning, TEXT("Grabber reporting on duty !!"));
-
 	// ...
 }
 
@@ -42,11 +40,11 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 		OUT PlayerviewRotator
 	);
 
-	UE_LOG
+/* 	UE_LOG
 	(
 		LogTemp, Display,TEXT("Location: %s  Rotation: %s"),
 		*OUT PlayerviewLocation.ToString(),*OUT PlayerviewRotator.ToString()
-	);
+	); */
 
 	FVector LineTraceEnd = PlayerviewLocation + (PlayerviewRotator.Vector())*Reach;
 	DrawDebugLine
@@ -61,6 +59,29 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 		5.f
 	);
 
+	FHitResult Hit;
+
+	FCollisionQueryParams TraceParmas
+	(
+		FName(TEXT("")),
+		false,
+		GetOwner()
+	);
+
+	GetWorld()->LineTraceSingleByObjectType
+	(
+		OUT Hit,
+		PlayerviewLocation,
+		LineTraceEnd,
+		FCollisionObjectQueryParams (ECollisionChannel :: ECC_PhysicsBody),
+		TraceParmas
+	);
+
+		AActor* ActorHit = Hit.GetActor();
+		if(ActorHit)
+		{
+			// UE_LOG( LogTemp, Error , TEXT("Ray has hit : %s"), *(ActorHit->GetName()));
+		}
 	
 
 	// ...
