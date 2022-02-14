@@ -37,4 +37,10 @@ private:
 		
 	//Return the fist actor hit in strcutre format
 	FHitResult GetFirstPhysicsBodyInreach();
+
+	// Return Player's Reach
+	FVector GetPlayerReach() const;
+
+	// Return Player Position
+	FVector GetPlayerPosition() ;
 };
