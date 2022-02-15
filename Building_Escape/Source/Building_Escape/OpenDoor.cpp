@@ -22,13 +22,8 @@ void UOpenDoor::BeginPlay()
 	InitialYaw = GetOwner()->GetActorRotation().Yaw;
 	CurrentYaw = InitialYaw;
 	OpenAngle += InitialYaw;
-
-	if (!PressurePlate)
-	{
-		UE_LOG(LogTemp, Error, TEXT("%s has component attached to it but without pressure plates"), *GetOwner()->GetName());
-	}
-
-	ActorThatOpen = GetWorld()->GetFirstPlayerController()->GetPawn();
+	FindPressurePlate();
+	FindAudio();
 }
 
 // Called every frame
@@ -40,6 +35,10 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	{
 		OpenDoor(DeltaTime);
 		DoorLastOpened = GetWorld()->GetTimeSeconds();
+		if (!DoorAudio){return;}
+		if (AudioSwitch)
+		{DoorAudio->Play();}
+		AudioSwitch = false;
 	}
 
 	else
@@ -47,13 +46,16 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 		if (GetWorld()->GetTimeSeconds() - DoorLastOpened > CloseDelay)
 		{
 			CloseDoor(DeltaTime);
+			if(!AudioSwitch)
+			{DoorAudio->Play();}
+			AudioSwitch = true;
 		}
 	}
 }
 
 void UOpenDoor ::OpenDoor(float DeltaTime)
 {
-	CurrentYaw = FMath::Lerp(CurrentYaw, OpenAngle, DeltaTime * DoorClosedSpeed);
+	CurrentYaw = FMath::Lerp(CurrentYaw, OpenAngle, DeltaTime * DoorOpenSpeed);
 	FRotator DoorRotation = GetOwner()->GetActorRotation();
 	DoorRotation.Yaw = CurrentYaw;
 	GetOwner()->SetActorRotation(DoorRotation);
@@ -61,7 +63,7 @@ void UOpenDoor ::OpenDoor(float DeltaTime)
 
 void UOpenDoor ::CloseDoor(float DeltaTime)
 {
-	CurrentYaw = FMath::Lerp(CurrentYaw, InitialYaw, DeltaTime * DoorOpenSpeed);
+	CurrentYaw = FMath::Lerp(CurrentYaw, InitialYaw, DeltaTime * DoorClosedSpeed);
 	FRotator DoorRotation = GetOwner()->GetActorRotation();
 	DoorRotation.Yaw = CurrentYaw;
 	GetOwner()->SetActorRotation(DoorRotation);
@@ -72,6 +74,9 @@ float UOpenDoor :: TotalMass() const
 	float Totalmass = 0.f;
 
 	TArray <AActor*> ActorThatOverlap;
+	
+	if (!PressurePlate) {return Totalmass;}
+
 	PressurePlate->GetOverlappingActors(OUT ActorThatOverlap);
 	for(AActor* Actor : ActorThatOverlap)
 	{
@@ -81,3 +86,21 @@ float UOpenDoor :: TotalMass() const
 	return Totalmass;
 }
 
+void UOpenDoor :: FindAudio()
+{
+	DoorAudio = GetOwner()->FindComponentByClass <UAudioComponent>();
+
+	if (!DoorAudio)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s has no audio component present"), *GetOwner()->GetName());
+	}
+}
+
+void UOpenDoor :: FindPressurePlate ()
+{
+	if (!PressurePlate)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s has component attached to it but without pressure plates"), *GetOwner()->GetName());
+	}
+
+}

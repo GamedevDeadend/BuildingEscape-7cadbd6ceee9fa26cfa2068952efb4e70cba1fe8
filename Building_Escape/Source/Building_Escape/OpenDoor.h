@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Components/AudioComponent.h"
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Engine/TriggerVolume.h"
@@ -27,6 +28,8 @@ public:
 	void OpenDoor(float DeltaTime);
 	void CloseDoor(float DeltaTime);
 	float TotalMass() const;
+	void FindAudio (); 
+	void FindPressurePlate (); 
 
 private:
 
@@ -34,6 +37,7 @@ private:
 	float CurrentYaw;
 	float DoorLastOpened;
 	float CloseDelay = 0.7f;
+	bool AudioSwitch = true;
 
 	UPROPERTY(EditAnyWhere)
 	float OpenDoorMass = 70.f;
@@ -48,9 +52,9 @@ private:
 	float DoorOpenSpeed = 0.2f;
 	
 	UPROPERTY(EditAnyWhere)
-	ATriggerVolume* PressurePlate;
+	ATriggerVolume* PressurePlate = nullptr;
 
-	UPROPERTY(EditAnyWhere)
-	AActor* ActorThatOpen;
+	UPROPERTY()
+	UAudioComponent* DoorAudio = nullptr;
 
 };

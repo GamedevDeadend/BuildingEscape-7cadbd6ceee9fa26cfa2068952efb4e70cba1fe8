@@ -7,7 +7,7 @@
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Grabber.generated.h"
 
-
+    
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BUILDING_ESCAPE_API UGrabber : public UActorComponent
 {
@@ -28,8 +28,12 @@ private:
 
 	float Reach = 100.f;
 
+	UPROPERTY()
 	UPhysicsHandleComponent* PhysicsHandle = nullptr;
+
+	UPROPERTY()
 	UInputComponent* InputComponent = nullptr;
+	
 	void Grab();
 	void Release(); 
 	void FindPhysicshandle();
@@ -42,5 +46,5 @@ private:
 	FVector GetPlayerReach() const;
 
 	// Return Player Position
-	FVector GetPlayerPosition() ;
+	FVector GetPlayerPosition() ;  
 };

@@ -31,6 +31,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	if (!PhysicsHandle){return;}
 	if (PhysicsHandle->GrabbedComponent)
 	{
 
@@ -43,11 +44,13 @@ void UGrabber ::Grab()
 	UE_LOG(LogTemp, Warning, TEXT("Grabber is pressed"));
 
 	FHitResult HitPhysicsBody = GetFirstPhysicsBodyInreach();
+	AActor *ActorHitPhysicsbody = HitPhysicsBody.GetActor();
 	UPrimitiveComponent *ComponentToGrab = HitPhysicsBody.GetComponent();
 
-	if (HitPhysicsBody.GetActor())
+	if (ActorHitPhysicsbody)
 
 	{
+		if (!PhysicsHandle){return;}
 		PhysicsHandle->GrabComponentAtLocation
 		(
 			ComponentToGrab,
@@ -60,6 +63,7 @@ void UGrabber ::Grab()
 
 void UGrabber ::Release()
 {
+	if (!PhysicsHandle){return;}
 	PhysicsHandle->ReleaseComponent();
 }
 
@@ -68,7 +72,7 @@ void UGrabber ::FindPhysicshandle()
 {
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
 
-	if (PhysicsHandle == nullptr)
+	if (!PhysicsHandle)
 	{
 		UE_LOG(LogTemp, Error, TEXT(" The %s has no PhysicsComponent !!"), *GetOwner()->GetName());
 	}
@@ -91,10 +95,12 @@ FHitResult UGrabber ::GetFirstPhysicsBodyInreach()
 {
 	FHitResult Hit;
 
-	FCollisionQueryParams TraceParmas(
+	FCollisionQueryParams TraceParmas
+	(
 		FName(TEXT("")),
 		false,
-		GetOwner());
+		GetOwner()
+	);
 
 	GetWorld()->LineTraceSingleByObjectType
 	(
@@ -147,9 +153,11 @@ FVector UGrabber :: GetPlayerPosition()
 	FRotator PlayerviewRotator;
 
 	// Get Player view point
-	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint
+	(
 		OUT PlayerviewLocation,
-		OUT PlayerviewRotator);
+		OUT PlayerviewRotator
+	);
 
 	return (PlayerviewLocation);
 }
