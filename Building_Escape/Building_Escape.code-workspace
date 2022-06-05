@@ -1,13 +1,21 @@
 {
 	"folders": [
 		{
+			"name": "Building_Escape",
 			"path": "."
 		},
 		{
-			"path": "F:\\UE_4.22"
+			"name": "UE4",
+			"path": "F:\\UE_4.27"
 		}
 	],
 	"settings": {
 		"typescript.tsc.autoDetect": "off"
+	},
+	"extensions": {
+		"recommendations": [
+			"ms-vscode.cpptools",
+			"ms-dotnettools.csharp"
+		]
 	}
 }
